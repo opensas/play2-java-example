@@ -1,0 +1,14 @@
+*~
+*.swp
+.classpath
+.project
+.settings/*
+.DS_Store
+eclipse/*
+eclipse/classes/*
+tmp/*
+tmp/bytecode/*
+
+/target/*
+/logs/*
+/RUNNING_PID
