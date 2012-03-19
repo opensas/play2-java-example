@@ -28,15 +28,7 @@ else
 	fi
 
 	PLAY_URL="http://download.playframework.org/releases/play-$VERSION.zip"
-
-	# debug, instead of download just copy from bak
-	echo "debug: should run \"curl -o $PLAY_ARCH $PLAY_URL\""
-
-	# debug
-	cp ${PLAY_ARCH}.bak ${PLAY_ARCH}
-
-	# debug
-	# curl -o $PLAY_ARCH $PLAY_URL
+	curl -o $PLAY_ARCH $PLAY_URL
 
 	if [[ ! -f $PLAY_ARCH ]]; then
 		echo "Error downloading play $VERSION from $PLAY_URL"
