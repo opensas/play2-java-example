@@ -10,30 +10,31 @@ Running on OpenShift
 
 Register at http://openshift.redhat.com/, and then create a raw (do-it-yourself) application:
 
-    rhc app create -a play -t raw-0.1
+    rhc app create -a play2java -t raw-0.1
 
 Add this upstream play-example repo:
 
-    cd play
+    cd play2java
     git remote add upstream -m master https://github.com/opensas/play2-java-example.git
     git pull -s recursive -X theirs upstream master
-    
+
+You should also update in your you appName setting in project/Build.scala to match your application name.
+
 Then push the repo upstream:
 
     git push
 
 That's it, you can now see your application running at:
 
-    http://play-yournamespace.rhcloud.com
+    http://play2java-yournamespace.rhcloud.com
 
-If you are a perfectionist, now it would be a good time to change your application.name setting in conf/application.conf to match your application.
 
 Working with a mysql database
 ----------------------------
 
 Just issue:
 
-    rhc app cartridge add -a play -c mysql-5.1
+    rhc app cartridge add -a play2java -c mysql-5.1
 
 Don't forget to write down the credentials.
 
@@ -47,7 +48,7 @@ Then uncomment the following lines from your conf/application.conf, like this:
 
 You can manage your new MySQL database by embedding phpmyadmin-3.4.
 
-    rhc app cartridge add -a play -c phpmyadmin-3.4
+    rhc app cartridge add -a play2java -c phpmyadmin-3.4
 
 It's also a good idea to create a different user with limited privileges on the database.
 
@@ -60,25 +61,17 @@ To deploy your changes to openshift just add your changes to the index, commit a
     git commit -m "a nice message"
     git push origin
 
-Working with modules
-----------------------------
-
-You don't have to do anything special, just add your modules to conf/dependencies.yml. Openshift will run
-
-    play deps --forProd --clearcache
-
-before starting you application, to make sure that your dependencias are all upto date.
 
 Trouble shooting
 ----------------------------
 
 To find out what's going on in openshift, issue
 
-    rhc app tail -a play
+    rhc app tail -a play2java
 
 If you feel like investigating further, you can
 
-    rhc app show -a play
+    rhc app show -a play2java
 
     Application Info
     ================
@@ -98,7 +91,7 @@ Having a look under the hood
 
 **.openshift/action_hooks/pre_build** does the following everytime you push changes
 
-* reads play version from _openshift.play.version_ at application.conf (1.2.4 by default)
+* reads play version from _openshift.play.version_ at conf/openshift.conf (2.0 by default)
 
 * checks if the desired version is installed, if not it downloads and installs play framework at $OPENSHIFT_DATA_DIR
 
@@ -108,22 +101,24 @@ then **.openshift/action_hooks/start** goes like this
 
 * it executes **.openshift/action_hooks/stop** to stop the application
 
-* cleans environment and update dependencies using _openshift.deps.params_ for play deps parameters (uses "--forProd --clearcache" by default)
+* cleans environment, compile sources and builds the stage
 
 ```bash
-    play clean
-    play deps $DEPS_PARAMS -Divy.hom=/tmp/ivy2
+    play clean compile stage
 ```
 
-* finally it starts the application, using _openshift.id_ (by default the configuration id to use is openshift). You can specify additional parameters with openshift.play.params.
+* finally it starts the application, using _conf/openshift.conf_. You can specify additional parameters with openshift.play.params.
 
 ```bash
-    play start --%ID $PLAY_PARAMS
+    target/start $PLAY_PARAMS 
+        -Dhttp.port=${OPENSHIFT_INTERNAL_PORT}
+        -Dhttp.address=${OPENSHIFT_INTERNAL_IP}
+        -Dconfig.resource=openshift.conf
 ```
 
-By default play will run in production mode, you can change it setting _%openshift.application.mode=dev_ in application.conf. The server will listen to ${OPENSHIFT_INTERNAL_PORT} at ${OPENSHIFT_INTERNAL_IP}.
+Play will then run your app in production mode. The server will listen to ${OPENSHIFT_INTERNAL_PORT} at ${OPENSHIFT_INTERNAL_IP}.
 
-* **.openshift/action_hooks/stop** just tries to kill the server.pid process, and then checks that no "java" process is running. If it's there, it tries five times to kill it nicely, and then if tries another five times to kill it with -SIGKILL.
+* **.openshift/action_hooks/stop** just tries to kill the RUNNING_PID process, and then checks that no "java" process is running. If it's there, it tries five times to kill it nicely, and then if tries another five times to kill it with -SIGKILL.
 
 Acknowledgments
 ----------------------------
