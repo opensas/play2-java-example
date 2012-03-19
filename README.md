@@ -18,7 +18,7 @@ Add this upstream play-example repo:
     git remote add upstream -m master https://github.com/opensas/play2-java-example.git
     git pull -s recursive -X theirs upstream master
 
-You should also update in your you appName setting in project/Build.scala to match your application name.
+Now you should update your appName setting in project/Build.scala to match your application name.
 
 Then push the repo upstream:
 
