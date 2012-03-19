@@ -14,7 +14,7 @@ function kill_app {
 		bash -c "$COMMAND &> $LOG_FILE" &> /dev/null
 		sleep $c
 		#killed it
-		if [[ -z `ps -A | grep java` ]]; then
+		if [[ -z `ps -A | grep ' java$'` ]]; then
 			if [[ -f "RUNNING_PID" ]]; then
 				rm RUNNING_PID
 			fi

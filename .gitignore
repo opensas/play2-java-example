@@ -9,6 +9,7 @@ eclipse/classes/*
 tmp/*
 tmp/bytecode/*
 
+/project/target/*
 /target/*
 /logs/*
 /RUNNING_PID
