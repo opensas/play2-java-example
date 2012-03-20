@@ -1,7 +1,7 @@
 Play framework 2 java application on OpenShift Express
 ============================
 
-This git repository helps you get up and running quickly with a Play framework application
+This git repository helps you get up and running quickly with a Play framework 2 (with Java) application
 on OpenShift Express.
 
 
