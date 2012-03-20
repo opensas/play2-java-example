@@ -60,5 +60,6 @@ fi
 
 LOG_FILE="${OPENSHIFT_LOG_DIR}system.out"
 PLAY_COMMAND="${OPENSHIFT_DATA_DIR}play-${VERSION}/play"
+IVY_CACHE_DIR="${OPENSHIFT_DATA_DIR}play-${VERSION}/repository/cache/"
 
 return 0

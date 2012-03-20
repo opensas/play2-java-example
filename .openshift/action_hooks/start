@@ -28,18 +28,45 @@ if [[ ! $? -eq 0 ]]; then
 	exit 1
 fi
 
-# clean everything, compile and stage
-echo "$PLAY_COMMAND clean compile stage" >> $LOG_FILE
-$PLAY_COMMAND clean compile stage &> $LOG_FILE
-
 export PLAY_LOG_PATH=${OPENSHIFT_LOG_DIR}
+
+echo "rm -fr $IVY_CACHE_DIR" &> $LOG_FILE
+rm -fr $IVY_CACHE_DIR &> $LOG_FILE
+
+echo "$PLAY_COMMAND clean-all" &> $LOG_FILE
+$PLAY_COMMAND clean-all &> $LOG_FILE
+
+echo "rm -fr $IVY_CACHE_DIR" &> $LOG_FILE
+rm -fr $IVY_CACHE_DIR &> $LOG_FILE
+
+echo "$PLAY_COMMAND clean" &> $LOG_FILE
+$PLAY_COMMAND clean &> $LOG_FILE
+
+echo "rm -fr $IVY_CACHE_DIR" &> $LOG_FILE
+rm -fr $IVY_CACHE_DIR &> $LOG_FILE
+
+echo "$PLAY_COMMAND compile" &> $LOG_FILE
+$PLAY_COMMAND compile &> $LOG_FILE
+
+echo "rm -fr $IVY_CACHE_DIR" &> $LOG_FILE
+rm -fr $IVY_CACHE_DIR &> $LOG_FILE
+
+echo "$PLAY_COMMAND stage" &> $LOG_FILE
+$PLAY_COMMAND stage &> $LOG_FILE
+
+echo "rm -fr $IVY_CACHE_DIR" &> $LOG_FILE
+rm -fr $IVY_CACHE_DIR &> $LOG_FILE
+
+# clean everything, compile and stage
+#echo "$PLAY_COMMAND clean compile stage" &> $LOG_FILE
+#$PLAY_COMMAND clean compile stage &> $LOG_FILE
 
 APP_COMMAND="target/start $PLAY_PARAMS "\
 "-Dhttp.port=${OPENSHIFT_INTERNAL_PORT} "\
 "-Dhttp.address=${OPENSHIFT_INTERNAL_IP} "\
 "-Dconfig.resource=openshift.conf"
 
-echo $APP_COMMAND >> $LOG_FILE
+echo $APP_COMMAND &> $LOG_FILE
 nohup bash -c "$APP_COMMAND &> $LOG_FILE" &> /dev/null &
 
 # $APP_COMMAND &
