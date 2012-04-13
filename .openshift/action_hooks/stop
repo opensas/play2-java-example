@@ -6,19 +6,23 @@
 
 function kill_app {
 
+	if [[ -z `ps -A | grep ' java$'` ]]; then
+		if [[ -f "RUNNING_PID" ]]; then rm RUNNING_PID
+		return
+	fi
+
 	command=$1
 
 	# try 5 times to kill it
 	for c in `seq 1 5`; do
 		echo "Trying to kill proccess, attemp number $c" >> $LOG_FILE
+		echo "[exec] $COMMAND" >> $LOG_FILE
 		bash -c "$COMMAND &>> $LOG_FILE" &> /dev/null
 		sleep $c
 		#killed it
 		if [[ -z `ps -A | grep ' java$'` ]]; then
-			if [[ -f "RUNNING_PID" ]]; then
-				rm RUNNING_PID
-			fi
-			exit 0
+			if [[ -f "RUNNING_PID" ]]; then rm RUNNING_PID
+			return
 		fi
 	done
 
@@ -36,12 +40,12 @@ cd "$OPENSHIFT_REPO_DIR"
 #kill play if it was running
 if [[ -f "RUNNING_PID" ]]; then
 
-	pid=`cat RUNNING_PID`
-
 	echo "Stopping play application" >> $LOG_FILE
 	bash -c "$PLAY_COMMAND stop &>> $LOG_FILE" &> /dev/null
 
-	if [[ -n $pid ]]; then
+	if [[ -f "RUNNING_PID" ]]; then
+		pid=`cat RUNNING_PID`
+
 		#try to kill it nicely
 		kill_app "kill -SIGTERM $pid"
 
@@ -52,10 +56,11 @@ fi
 
 #it survived, try to kill it manually
 if [[ -n `ps -A | grep java` ]]; then
-
 	#try to kill it nicely
 	kill_app "pkill -SIGTERM java"
+fi
 
+if [[ -n `ps -A | grep java` ]]; then
 	#try to kill it harshly
 	kill_app "pkill -SIGKILL java"
 fi
@@ -66,4 +71,5 @@ if [[ -n `ps -A | grep java` ]]; then
 	exit 1
 fi
 
+echo "[info] successfully stopped play application" >> $LOG_FILE
 exit 0
