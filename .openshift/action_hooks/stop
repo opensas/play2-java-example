@@ -7,7 +7,9 @@
 function kill_app {
 
 	if [[ -z `ps -A | grep ' java$'` ]]; then
-		if [[ -f "RUNNING_PID" ]]; then rm RUNNING_PID
+		if [[ -f "RUNNING_PID" ]]; then 
+			rm RUNNING_PID
+		fi
 		return
 	fi
 
@@ -21,7 +23,9 @@ function kill_app {
 		sleep $c
 		#killed it
 		if [[ -z `ps -A | grep ' java$'` ]]; then
-			if [[ -f "RUNNING_PID" ]]; then rm RUNNING_PID
+			if [[ -f "RUNNING_PID" ]]; then 
+				rm RUNNING_PID
+			fi
 			return
 		fi
 	done
