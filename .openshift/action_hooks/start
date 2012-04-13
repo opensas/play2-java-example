@@ -30,11 +30,11 @@ fi
 
 export PLAY_LOG_PATH=${OPENSHIFT_LOG_DIR}
 
-echo "[exec] $PLAY_COMMAND clean-all" &>> $LOG_FILE
+echo "[exec] $PLAY_COMMAND clean-all clean stage" >> $LOG_FILE
 $PLAY_COMMAND clean-all clean stage &>> $LOG_FILE
 
 # clean everything, compile and stage
-#echo "$PLAY_COMMAND clean compile stage" &>> $LOG_FILE
+#echo "[exec] $PLAY_COMMAND clean compile stage" >> $LOG_FILE
 #$PLAY_COMMAND clean compile stage &>> $LOG_FILE
 
 APP_COMMAND="target/start $PLAY_PARAMS "\
@@ -42,7 +42,7 @@ APP_COMMAND="target/start $PLAY_PARAMS "\
 "-Dhttp.address=${OPENSHIFT_INTERNAL_IP} "\
 "-Dconfig.resource=openshift.conf"
 
-echo $APP_COMMAND &>> $LOG_FILE
+echo "[exec] $APP_COMMAND" >> $LOG_FILE
 nohup bash -c "$APP_COMMAND &>> $LOG_FILE" &> /dev/null &
 
 # $APP_COMMAND &
