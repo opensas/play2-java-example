@@ -73,7 +73,7 @@ fi
 if [[ -n `ps -A | grep java` ]]; then
 	echo "Error: could not stop play application, error executing 'pkill java'" >> $LOG_FILE
 	exit 1
+else
+	echo "[info] successfully stopped play application" >> $LOG_FILE
+	exit 0
 fi
-
-echo "[info] successfully stopped play application" >> $LOG_FILE
-exit 0
