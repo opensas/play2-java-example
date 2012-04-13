@@ -14,7 +14,7 @@ if [[ ! $? -eq 0 ]]; then
 fi
 
 if [[ ! -f $PLAY_COMMAND ]]; then
-	echo "Error: couldn't find play executable at $PLAY_COMMAND"
+	echo "Error: couldn't find play executable at $PLAY_COMMAND" >> $LOG_FILE
 	exit 1
 fi
 
@@ -24,32 +24,32 @@ cd "$OPENSHIFT_REPO_DIR"
 ${OPENSHIFT_REPO_DIR}.openshift/action_hooks/stop
 
 if [[ ! $? -eq 0 ]]; then
-	echo "Error: could not stop play application"
+	echo "Error: could not stop play application" >> $LOG_FILE
 	exit 1
 fi
 
 export PLAY_LOG_PATH=${OPENSHIFT_LOG_DIR}
 
-echo "[exec] $PLAY_COMMAND clean-all" &> $LOG_FILE
-$PLAY_COMMAND clean-all clean stage &> $LOG_FILE
+echo "[exec] $PLAY_COMMAND clean-all" &>> $LOG_FILE
+$PLAY_COMMAND clean-all clean stage &>> $LOG_FILE
 
 # clean everything, compile and stage
-#echo "$PLAY_COMMAND clean compile stage" &> $LOG_FILE
-#$PLAY_COMMAND clean compile stage &> $LOG_FILE
+#echo "$PLAY_COMMAND clean compile stage" &>> $LOG_FILE
+#$PLAY_COMMAND clean compile stage &>> $LOG_FILE
 
 APP_COMMAND="target/start $PLAY_PARAMS "\
 "-Dhttp.port=${OPENSHIFT_INTERNAL_PORT} "\
 "-Dhttp.address=${OPENSHIFT_INTERNAL_IP} "\
 "-Dconfig.resource=openshift.conf"
 
-echo $APP_COMMAND &> $LOG_FILE
-nohup bash -c "$APP_COMMAND &> $LOG_FILE" &> /dev/null &
+echo $APP_COMMAND &>> $LOG_FILE
+nohup bash -c "$APP_COMMAND &>> $LOG_FILE" &> /dev/null &
 
 # $APP_COMMAND &
 
 if [[ ! $? -eq 0 ]]; then
-	echo "Error: starting play application"
-	echo "Error executing '$APP_COMMAND'"
+	echo "Error: starting play application" >> $LOG_FILE
+	echo "Error executing '$APP_COMMAND'" >> $LOG_FILE
 	exit 1
 fi
 
