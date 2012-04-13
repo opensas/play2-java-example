@@ -21,7 +21,7 @@ if [[ -d $PLAY_PATH ]]; then
 	echo "Play $VERSION already installed at `pwd`/$PLAY_PATH"
 else
 
-	echo "Installing play $VERSION"
+	echo "Installing play $VERSION" >> $LOG_FILE
 
 	if [[ -f $PLAY_ARCH ]]; then
 		rm $PLAY_ARCH
@@ -31,7 +31,7 @@ else
 	curl -o $PLAY_ARCH $PLAY_URL
 
 	if [[ ! -f $PLAY_ARCH ]]; then
-		echo "Error downloading play $VERSION from $PLAY_URL"
+		echo "Error downloading play $VERSION from $PLAY_URL" >> $LOG_FILE
 		exit -1
 	fi
 
@@ -41,7 +41,7 @@ else
 	PLAY_FULL_PATH="${OPENSHIFT_DATA_DIR}${PLAY_PATH}"
 
 	if [[ ! -d $PLAY_FULL_PATH ]]; then
-		echo "Error installing play $VERSION to $PLAY_FULL_PATH"
+		echo "Error installing play $VERSION to $PLAY_FULL_PATH" >> $LOG_FILE
 		exit -1
 	fi
 
@@ -49,7 +49,7 @@ else
 
 	#verify that the desired version installed successfully
 	if [[ ! $installed_version = $VERSION ]]; then
-		echo "Error installing play $VERSION to $PLAY_FULL_PATH"
+		echo "Error installing play $VERSION to $PLAY_FULL_PATH" >> $LOG_FILE
 		rm -fr $PLAY_FULL_PATH
 		exit -1
 	fi
@@ -59,9 +59,9 @@ else
 		# avoid showing "Removing version [play-]*" message
 		if [[ -d $old ]]; then
 			if [[ $old = "play-$VERSION" ]]; then
-				echo "Skipping current version version $old"
+				echo "Skipping current version version $old" >> $LOG_FILE
 			else
-				echo "Removing version $old"
+				echo "Removing version $old" >> $LOG_FILE
 				rm -fr $old
 			fi
 		fi
