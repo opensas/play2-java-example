@@ -30,12 +30,12 @@ fi
 
 export PLAY_LOG_PATH=${OPENSHIFT_LOG_DIR}
 
-echo "[exec] $PLAY_COMMAND clean-all clean stage" >> $LOG_FILE
-$PLAY_COMMAND clean-all clean stage &>> $LOG_FILE
-
 # clean everything, compile and stage
-#echo "[exec] $PLAY_COMMAND clean compile stage" >> $LOG_FILE
-#$PLAY_COMMAND clean compile stage &>> $LOG_FILE
+# APP_COMMAND="$PLAY_COMMAND clean-all clean stage"
+APP_COMMAND="$PLAY_COMMAND stage"
+
+echo "[exec] $APP_COMMAND" >> $LOG_FILE
+$APP_COMMAND &>> $LOG_FILE
 
 APP_COMMAND="target/start $PLAY_PARAMS "\
 "-Dhttp.port=${OPENSHIFT_INTERNAL_PORT} "\
