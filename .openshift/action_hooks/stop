@@ -66,4 +66,5 @@ if [[ -n `ps -A | grep java` ]]; then
 	exit 1
 fi
 
+echo "[info] successfully stopped play application" >> $LOG_FILE
 exit 0
